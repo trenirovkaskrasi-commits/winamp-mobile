@@ -29,7 +29,7 @@ export function WindowBorder({ title, children, className = '', titleClassName =
           {onClose && (
             <button 
               onClick={onClose}
-              className="winamp-btn w-3.5 h-3.5 sm:w-4 sm:h-4 p-0 flex items-center justify-center font-bold text-[9px] sm:text-[10px] leading-none mb-0.5 ml-1 flex-shrink-0"
+              className="winamp-btn w-3.5 h-3.5 sm:w-4 sm:h-4 p-0 hidden sm:flex items-center justify-center font-bold text-[9px] sm:text-[10px] leading-none mb-0.5 ml-1 flex-shrink-0"
               style={{ minHeight: 'unset', minWidth: 'unset', padding: 0 }}
             >
               X

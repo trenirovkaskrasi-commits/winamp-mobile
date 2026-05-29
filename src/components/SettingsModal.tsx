@@ -44,6 +44,15 @@ export function SettingsModal() {
                 IMPORT BACKUP
               </button>
             </div>
+            
+            <a 
+              href="https://github.com/trenirovkaskrasi-commits/winamp-mobile/releases"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="winamp-btn shrink-0 w-full py-3 font-bold text-sm tracking-wide text-center uppercase flex items-center justify-center"
+            >
+              CHECK FOR UPDATES
+            </a>
 
             <div className="flex-1 flex flex-col justify-center text-[#00E600] font-mono p-4 bg-[#000] border border-[#0f5132] rounded shadow-[inset_0_0_15px_rgba(0,230,0,0.15)] gap-3 uppercase font-bold tracking-wide overflow-hidden">
               <div className="border-b-2 border-[#0f5132] pb-2 text-center text-lg sm:text-xl text-[#39ff14]" style={{ textShadow: '0 0 5px rgba(57,255,20,0.5)' }}>ABOUT THE PROGRAM</div>
