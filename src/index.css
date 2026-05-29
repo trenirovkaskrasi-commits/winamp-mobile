@@ -12,7 +12,7 @@
   }
 
   body {
-    background-color: #121212;
+    background-color: #000;
   }
   
   .winamp-panel {
@@ -184,7 +184,7 @@ html {
 }
 
 body {
-  background-color: #121212;
+  background-color: #000;
   color: #fff;
   user-select: none;
   -webkit-user-select: none;

@@ -14,7 +14,7 @@ export default function App() {
   }, [initStore]);
 
   return (
-    <div className="fixed inset-0 w-full h-[100dvh] flex items-center justify-center lg:justify-start lg:items-start sm:p-4 overflow-hidden bg-[#121212]">
+    <div className="fixed inset-0 w-full h-[100dvh] flex items-center justify-center lg:justify-start lg:items-start sm:p-4 overflow-hidden bg-black">
       <AudioEngine />
       <InstallAppTile />
       
