@@ -4,7 +4,7 @@ const config: CapacitorConfig = {
   appId: 'com.winamp.retro',
   appName: 'Winamp',
   webDir: 'dist',
-  backgroundColor: '#000000',
+  backgroundColor: '#121212',
   server: {
     cleartext: true
   }
