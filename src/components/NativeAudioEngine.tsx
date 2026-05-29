@@ -49,7 +49,9 @@ export function NativeAudioEngine() {
         await Playlist.initialize();
         isInitialized.current = true;
         
-        listener = await Playlist.addListener('status', (status: any) => {
+        listener = await Playlist.addListener('status', (eventData: any) => {
+          if (eventData.action !== 'status' || !eventData.status) return;
+          const status = eventData.status;
           const val = status.value;
           if (!val) return;
 
@@ -59,7 +61,7 @@ export function NativeAudioEngine() {
                skipNextSync.current = true;
                usePlayerStore.setState({ currentTrackIndex: newIndex });
             }
-          } else if (val.status === 'playing') {
+          } else if (status.msgType === 30) { // RMXSTATUS_PLAYING
             if (stateTimeout.current) clearTimeout(stateTimeout.current);
             setPlaybackState('playing');
             setConnectionState('connected');
@@ -68,14 +70,14 @@ export function NativeAudioEngine() {
             // BUG 2 FIX: Explicitly force volume back to maximum to overwrite Android's permanent Audio Focus ducking
             // This ensures Shoutcast/Icecast radio streams regain full volume after a notification is dismissed.
             Playlist.setPlaybackVolume({ volume: usePlayerStore.getState().volume }).catch(console.error);
-          } else if (val.status === 'paused' || val.status === 'stopped') {
+          } else if (status.msgType === 35 || status.msgType === 60) { // RMXSTATUS_PAUSE or RMXSTATUS_STOPPED
             if (stateTimeout.current) clearTimeout(stateTimeout.current);
             stateTimeout.current = setTimeout(() => {
-                setPlaybackState(val.status === 'stopped' ? 'stopped' : 'paused');
+                setPlaybackState(status.msgType === 60 ? 'stopped' : 'paused');
             }, 150); // Debounce to prevent LCD flicker during gapless track transition
-          } else if (val.status === 'loading' || status.msgType === 25) { // BUFFERING
+          } else if (status.msgType === 10 || status.msgType === 25) { // LOADING or BUFFERING
             setBufferState('buffering');
-          } else if (val.status === 'error' || status.msgType === 5) {
+          } else if (status.msgType === 5) { // ERROR
             setConnectionState('offline');
             setBufferState('stalled');
           }
@@ -93,18 +95,13 @@ export function NativeAudioEngine() {
     };
     init();
 
-    // Polling interval for currentTime and duration (Bug 6 fix)
-    const interval = setInterval(async () => {
+    // Polling interval for currentTime and duration fallback
+    const interval = setInterval(() => {
       const state = usePlayerStore.getState();
       if (state.playbackState === 'playing') {
-         try {
-           const pos = await Playlist.getPosition();
-           const dur = await Playlist.getDuration();
-           if (pos && pos.value >= 0) state.setCurrentTime(pos.value);
-           if (dur && dur.value > 0) state.setDuration(dur.value);
-         } catch (e) {
-           // ignore
-         }
+         // Fallback tick just in case native doesn't emit position continuously
+         if (state.duration && state.duration !== Infinity && state.currentTime >= state.duration) return;
+         state.setCurrentTime(state.currentTime + 1);
       }
     }, 1000);
 
