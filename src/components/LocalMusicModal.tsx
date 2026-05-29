@@ -3,7 +3,7 @@ import { usePlayerStore } from "../store/playerStore";
 import { Track } from "../types";
 import { loadSetting, saveSetting } from "../lib/db";
 import { SavedPlaylist } from "./PlaylistModals";
-
+import { App as CapacitorApp } from "@capacitor/app";
 export function LocalMusicModal({
   onClose,
   onAddFiles,
@@ -19,6 +19,15 @@ export function LocalMusicModal({
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const { clearPlaylist, addTracks } = usePlayerStore();
+
+  useEffect(() => {
+    const listener = CapacitorApp.addListener("backButton", () => {
+      onClose();
+    });
+    return () => {
+      listener.then((l) => l.remove());
+    };
+  }, [onClose]);
 
   useEffect(() => {
     loadSetting("saved_playlists", []).then((data) => {
@@ -98,7 +107,7 @@ export function LocalMusicModal({
           <span>LOCAL MUSIC</span>
           <button
             onClick={onClose}
-            className="winamp-btn w-6 h-6 flex items-center justify-center text-xs"
+            className="winamp-btn w-6 h-6 items-center justify-center text-xs hidden sm:flex"
           >
             X
           </button>
@@ -154,7 +163,7 @@ export function LocalMusicModal({
                       className="flex justify-between items-center hover:bg-[#0000a8] group p-1 cursor-pointer"
                       onClick={() => handleLoad(p.id)}
                     >
-                      <span className="truncate flex-1">
+                      <span className="truncate flex-1 text-[16px] sm:text-[18px]">
                         {p.name}{" "}
                         <span className="opacity-50 text-[10px]">
                           ({p.tracks.length})

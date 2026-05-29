@@ -7,6 +7,7 @@ import { HQ_STATIONS } from "../data/hqStations";
 import { SavedPlaylist } from "./PlaylistModals";
 
 import { searchRadioStations, RadioStation } from "../radio/radioBrowser";
+import { App as CapacitorApp } from "@capacitor/app";
 
 export function OnlineRadioModal({
   onClose,
@@ -35,6 +36,15 @@ export function OnlineRadioModal({
     clearPlaylist,
     addTracks,
   } = usePlayerStore();
+
+  useEffect(() => {
+    const listener = CapacitorApp.addListener("backButton", () => {
+      onClose();
+    });
+    return () => {
+      listener.then((l) => l.remove());
+    };
+  }, [onClose]);
 
   useEffect(() => {
     loadSetting("saved_playlists", []).then((data) => {
@@ -174,7 +184,7 @@ export function OnlineRadioModal({
                 }}
               >
                 <div className="flex flex-col overflow-hidden mr-2 whitespace-nowrap truncate w-full">
-                  <span className="truncate">
+                  <span className="truncate text-[16px] sm:text-[18px]">
                     {station.name}{" "}
                     {isAdded && (
                       <span className="opacity-70 ml-1">(Added)</span>
@@ -216,7 +226,7 @@ export function OnlineRadioModal({
                     }}
                   >
                     <div className="flex flex-col overflow-hidden mr-2 whitespace-nowrap truncate w-full">
-                      <span className="truncate">
+                      <span className="truncate text-[16px] sm:text-[18px]">
                         {station.name}{" "}
                         {isAdded && (
                           <span className="opacity-70 ml-1">(Added)</span>
@@ -302,7 +312,7 @@ export function OnlineRadioModal({
                 className="flex justify-between items-center hover:bg-[#0000a8] group p-1 cursor-pointer"
                 onClick={() => handleLoad(p.id)}
               >
-                <span className="truncate flex-1">
+                <span className="truncate flex-1 text-[16px] sm:text-[18px]">
                   {p.name}{" "}
                   <span className="opacity-50 text-[10px]">
                     ({p.tracks.length})
@@ -342,7 +352,7 @@ export function OnlineRadioModal({
           )}
           <button
             onClick={onClose}
-            className="winamp-btn w-6 h-6 flex items-center justify-center text-xs"
+            className="winamp-btn w-6 h-6 items-center justify-center text-xs hidden sm:flex"
           >
             X
           </button>

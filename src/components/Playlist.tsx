@@ -370,7 +370,7 @@ export function Playlist() {
         {/* Track UI */}
         <div
           className={cn(
-            "flex flex-row items-center justify-between px-1 font-mono text-[13px] sm:text-[15px] h-full w-full transition-transform",
+            "flex flex-row items-center justify-between px-1 font-mono text-[16px] sm:text-[18px] h-full w-full transition-transform",
             isActive
               ? "bg-[#0000a8] text-white"
               : "text-[#39ff14] hover:bg-[#0000a8]/30",

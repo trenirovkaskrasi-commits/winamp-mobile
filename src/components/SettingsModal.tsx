@@ -1,9 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { usePlayerStore } from '../store/playerStore';
 import { WindowBorder } from './WindowBorder';
+import { App as CapacitorApp } from "@capacitor/app";
 
 export function SettingsModal() {
   const { showSettings, setShowSettings, setShowImport, setShowExport } = usePlayerStore();
+
+  useEffect(() => {
+    if (!showSettings) return;
+    const listener = CapacitorApp.addListener("backButton", () => {
+      setShowSettings(false);
+    });
+    return () => {
+      listener.then((l) => l.remove());
+    };
+  }, [showSettings, setShowSettings]);
 
   if (!showSettings) return null;
 
