@@ -43,6 +43,7 @@ export function NativeAudioEngine() {
   // Initialize and listen to native events
   useEffect(() => {
     let listener: any = null;
+    let lastNativeUpdate = 0;
 
     const init = async () => {
       try {
@@ -83,6 +84,7 @@ export function NativeAudioEngine() {
           }
 
           if (val.currentPosition !== undefined && val.currentPosition >= 0) {
+              lastNativeUpdate = Date.now();
               setCurrentTime(val.currentPosition);
           }
           if (val.duration !== undefined && val.duration > 0) {
@@ -100,6 +102,8 @@ export function NativeAudioEngine() {
       const state = usePlayerStore.getState();
       if (state.playbackState === 'playing') {
          // Fallback tick just in case native doesn't emit position continuously
+         if (Date.now() - lastNativeUpdate < 2000) return; // Native events are firing, skip manual tick to prevent flicker
+         
          if (state.duration && state.duration !== Infinity && state.currentTime >= state.duration) return;
          state.setCurrentTime(state.currentTime + 1);
       }
