@@ -6,11 +6,24 @@ import { SettingsModal } from './components/SettingsModal';
 import { usePlayerStore } from './store/playerStore';
 import { InstallAppTile } from './components/InstallAppTile';
 
+import { StatusBar, Style } from '@capacitor/status-bar';
+
 export default function App() {
   const initStore = usePlayerStore(state => state.initStore);
   
   useEffect(() => {
     initStore();
+    
+    // Force status bar to black
+    const setStatusBarStyle = async () => {
+      try {
+        await StatusBar.setStyle({ style: Style.Dark });
+        await StatusBar.setBackgroundColor({ color: '#000000' });
+      } catch (e) {
+        // Ignore on web
+      }
+    };
+    setStatusBarStyle();
   }, [initStore]);
 
   return (
