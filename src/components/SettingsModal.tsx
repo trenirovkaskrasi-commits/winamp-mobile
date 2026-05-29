@@ -46,7 +46,7 @@ export function SettingsModal() {
             </div>
             
             <a 
-              href="https://github.com/trenirovkaskrasi-commits/winamp-mobile/releases"
+              href="https://github.com/trenirovkaskrasi-commits/winamp-mobile/releases/latest"
               target="_blank"
               rel="noopener noreferrer"
               className="winamp-btn shrink-0 w-full py-3 font-bold text-sm tracking-wide text-center uppercase flex items-center justify-center"
