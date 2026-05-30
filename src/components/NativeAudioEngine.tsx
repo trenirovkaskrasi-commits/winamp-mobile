@@ -59,7 +59,6 @@ export function NativeAudioEngine() {
           if (status.msgType === 100) { // RMXSTATUS_TRACK_CHANGED
             const newIndex = val.currentIndex;
             if (newIndex >= 0 && newIndex !== usePlayerStore.getState().currentTrackIndex) {
-               skipNextSync.current = true;
                usePlayerStore.setState({ currentTrackIndex: newIndex });
             }
           } else if (status.msgType === 30) { // RMXSTATUS_PLAYING
@@ -184,34 +183,7 @@ export function NativeAudioEngine() {
     syncPlaylist();
   }, [playlist]);
 
-  // Sync Current Track Index
-  useEffect(() => {
-    if (!isInitialized.current) return;
-    
-    if (skipNextSync.current) {
-        skipNextSync.current = false;
-        return; // index changed by native event, do not trigger native playTrackByIndex
-    }
-    
-    if (currentTrackIndex >= 0 && currentTrackIndex < playlist.length) {
-       Playlist.playTrackByIndex({ index: currentTrackIndex, position: 0 }).catch(console.error);
-    } else {
-       Playlist.pause().catch(console.error);
-    }
-  }, [currentTrackIndex]);
 
-  // Sync Playback State
-  useEffect(() => {
-    if (!isInitialized.current) return;
-    
-    if (playbackState === 'playing') {
-       Playlist.play().catch(console.error);
-    } else if (playbackState === 'paused') {
-       Playlist.pause().catch(console.error);
-    } else if (playbackState === 'stopped') {
-       Playlist.pause().catch(console.error); // Playlist plugin uses pause for stop usually
-    }
-  }, [playbackState]);
 
   // Sync Volume
   useEffect(() => {

@@ -5,6 +5,11 @@ import {defineConfig} from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(() => {
+  const buildDate = new Date();
+  const offset = 3; // Bulgarian Time (UTC+3 for EEST)
+  const localTime = new Date(buildDate.getTime() + offset * 3600 * 1000);
+  process.env.VITE_BUILD_DATE = localTime.toISOString().replace('T', ' ').substring(0, 16);
+
   return {
     plugins: [
       react(), 

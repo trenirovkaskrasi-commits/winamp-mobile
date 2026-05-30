@@ -83,11 +83,17 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     set((state) => ({ playlist: [...state.playlist, ...tracks] })),
 
   playTrack: (index) =>
-    set({
-      currentTrackIndex: index,
-      playbackState: "playing",
-      currentTime: 0,
-      duration: 0,
+    set((state) => {
+      if (Capacitor.isNativePlatform()) {
+         Playlist.playTrackByIndex({ index }).catch(console.error);
+         return state;
+      }
+      return {
+        currentTrackIndex: index,
+        playbackState: "playing",
+        currentTime: 0,
+        duration: 0,
+      };
     }),
 
   playNext: () =>
@@ -101,8 +107,17 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         if (state.isRepeat) {
           nextIndex = 0;
         } else {
+          if (Capacitor.isNativePlatform()) {
+              Playlist.pause().catch(console.error);
+              return state;
+          }
           return { playbackState: "stopped", currentTime: 0 };
         }
+      }
+      
+      if (Capacitor.isNativePlatform()) {
+          Playlist.playTrackByIndex({ index: nextIndex }).catch(console.error);
+          return state;
       }
       return {
         currentTrackIndex: nextIndex,
@@ -117,6 +132,11 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
       if (state.playlist.length === 0) return state;
       let prevIndex = state.currentTrackIndex - 1;
       if (prevIndex < 0) prevIndex = state.playlist.length - 1;
+      
+      if (Capacitor.isNativePlatform()) {
+          Playlist.playTrackByIndex({ index: prevIndex }).catch(console.error);
+          return state;
+      }
       return {
         currentTrackIndex: prevIndex,
         playbackState: "playing",
@@ -127,23 +147,34 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
   togglePlayPause: () =>
     set((state) => {
-      if (state.currentTrackIndex === -1 && state.playlist.length > 0) {
-        return { currentTrackIndex: 0, playbackState: "playing" };
-      }
       if (Capacitor.isNativePlatform()) {
-         if (state.playbackState === "playing") {
+         if (state.currentTrackIndex === -1 && state.playlist.length > 0) {
+             Playlist.playTrackByIndex({ index: 0 }).catch(console.error);
+         } else if (state.playbackState === "playing") {
              Playlist.pause().catch(console.error);
          } else {
              Playlist.play().catch(console.error);
          }
          return state; // Do not mutate state here; let NativeAudioEngine sync it via native events
       }
+      
+      if (state.currentTrackIndex === -1 && state.playlist.length > 0) {
+        return { currentTrackIndex: 0, playbackState: "playing" };
+      }
       const nextState =
         state.playbackState === "playing" ? "paused" : "playing";
       return { playbackState: nextState };
     }),
 
-  stop: () => set({ playbackState: "stopped", currentTime: 0 }),
+  stop: () => 
+    set((state) => {
+      if (Capacitor.isNativePlatform()) {
+          Playlist.pause().catch(console.error);
+          Playlist.seekTo({ position: 0 }).catch(console.error);
+          return state;
+      }
+      return { playbackState: "stopped", currentTime: 0 };
+    }),
 
   setVolume: (volume) => set({ volume }),
   setCurrentTime: (currentTime) => set({ currentTime }),

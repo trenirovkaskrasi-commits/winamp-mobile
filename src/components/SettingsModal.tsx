@@ -57,7 +57,7 @@ export function SettingsModal() {
             <div className="flex-1 flex flex-col justify-center text-[#00E600] font-mono p-4 bg-[#000] border border-[#0f5132] rounded shadow-[inset_0_0_15px_rgba(0,230,0,0.15)] gap-3 uppercase font-bold tracking-wide overflow-hidden">
               <div className="border-b-2 border-[#0f5132] pb-2 text-center text-lg sm:text-xl text-[#39ff14]" style={{ textShadow: '0 0 5px rgba(57,255,20,0.5)' }}>ABOUT THE PROGRAM</div>
               <div className="flex flex-col gap-3 flex-1 justify-center text-xs sm:text-sm">
-                <div className="flex justify-between items-center whitespace-nowrap"><span>VERSION:</span> <span className="text-right text-[#fff]">1.1.0</span></div>
+                <div className="flex justify-between items-center whitespace-nowrap"><span>VERSION:</span> <span className="text-right text-[#fff]">{import.meta.env.VITE_BUILD_DATE || '1.1.0'}</span></div>
                 <div className="flex justify-between items-center whitespace-nowrap"><span>AUTHOR:</span> <span className="text-right text-[#fff]">K. IVANOV, AI STUDIO</span></div>
                 <div className="flex justify-between items-start mt-2 border-t border-[#0f5132] pt-3"><span className="mt-1">DESCRIPTION:</span> <span className="text-right whitespace-normal leading-tight ml-2 text-[#fff]">WEB AUDIO PLAYER & RADIO</span></div>
               </div>
